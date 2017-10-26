@@ -7,6 +7,7 @@ import tensorflow as tf
 import json
 import operator
 import os
+import timeit
 
 import label_map_util as l_util
 import visualization_utils as vis_util
@@ -100,9 +101,13 @@ class TLClassifier(object):
         classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
 
         # Run session
+        start_time = timeit.default_timer()
         (boxes, scores, classes) = self.sess.run(
                                      [boxes, scores, classes],
                                      feed_dict={image_tensor:image_np_expanded})
+        inference_time = timeit.default_timer() - start_time
+
+        rospy.loginfo("Inference took %s seconds", inference_time)
 
         # Manipulates output of sess.run
         scores = np.squeeze(scores)
@@ -135,6 +140,5 @@ class TLClassifier(object):
                 return TrafficLight.UNKNOWN
 
         else:
+            rospy.loginfo("No lights were predicted")
             return TrafficLight.UNKNOWN
-
-
