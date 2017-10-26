@@ -118,6 +118,7 @@ class TLClassifier(object):
         results = {}
         for i, box in enumerate(boxes):
             if scores[i] >= MIN_THRESHOLD:
+                rospy.loginfo("Class: %s - Score: %s", self.category_index[classes[i]], scores[i])
                 if classes[i] not in results:
                     results[classes[i]] = 1
                 else:
@@ -140,5 +141,5 @@ class TLClassifier(object):
                 return TrafficLight.UNKNOWN
 
         else:
-            rospy.loginfo("No lights were predicted")
+            rospy.loginfo("No lights were detected")
             return TrafficLight.UNKNOWN
